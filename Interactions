@@ -1,0 +1,58 @@
+import logging as log
+
+logger = log.getLogger("InteractionsAssessment")
+log.basicConfig(level=log.DEBUG)
+
+
+def isNWMAddress(email):
+    return email.find("natwestmarkets.com") > -1
+
+
+def readEmailAddresses(oneOrManyEmails, delimeter):
+    emailsAddresses = oneOrManyEmails.lower().split(delimeter)
+    return emailsAddresses
+
+
+def cleanAddress(address):
+    return address[address.find("<") + 1: address.find(">")] if address.find("<") > -1 else address
+
+
+def stripToJustEmail(emailAddressList):
+    return [cleanAddress(x).strip() for x in emailAddressList]
+
+
+def makeUnique(list1):
+    # insert the list to the set
+    list_set = set(list1)
+    # convert the set to the list
+    unique_list = (list(list_set))
+    return unique_list
+
+
+def lookupCounterparty(address):
+    return address
+
+
+def assignCounterparty(emailAddressList):
+    return ["NWM" if isNWMAddress(x) else lookupCounterparty(x) for x in emailAddressList]
+
+def emailsToCptyNames(emailAddresses):
+
+
+# Test is NWM
+logger.info(isNWMAddress("russell.cooper@natwestmarkets.com"))
+logger.info(isNWMAddress("russell.cooper@btinternet.com"))
+logger.info(readEmailAddresses("russell.cooper@natwestmarkets.com", ";"))
+logger.info(cleanAddress("RUSSELL COOPER<russell.cooper@btinternet.com>"))
+logger.info(cleanAddress("russell.cooper@btinternet.com"))
+
+emailAddresses = readEmailAddresses(
+    "RUSS COOPER<russell.cooper@natwestmarkets.com>;russell.cooper@natwestmarkets.com; russell.cooper@bloomber.net",
+    ";")
+logger.info(emailAddresses)
+emailAddresses = stripToJustEmail(emailAddresses)
+logger.info(emailAddresses)
+emailAddresses = makeUnique(emailAddresses)
+logger.info(emailAddresses)
+emailAddresses = assignCounterparty(emailAddresses)
+logger.info(emailAddresses)
